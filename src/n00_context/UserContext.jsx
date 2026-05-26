@@ -1,0 +1,60 @@
+import React, { createContext } from 'react'
+import HomePages from '../n01_pages/HomePages'
+
+export const UserContext = createContext();
+
+const initialUsers = [
+  {id:1,username:"john",password: "1111"},
+  {id:2,username:"peter",password: "1111"},
+  {id:3,username:"susan",password: "1111"},
+  {id:4,username:"sue",password: "1111"} //임시 데이터 베이스
+
+]
+
+const initialState = {
+  users: initialUsers,
+  username: "",
+  isLogin: false,
+}
+
+const reducer = (state, action) => {
+  switch(action.type){
+    case "login":
+      return{
+        ...state,
+        isLogin: true,
+        username: action.payload
+      }
+    case "register":
+      return{
+        ...state,
+        users:[
+          ...state,users,
+          {
+            id:action.payload.id,
+            username:action.payload.user.username,
+            password:action.payload.user.password
+          }
+        ]
+      }
+    case "logout":
+      return{
+        ...state,
+        isLogin: false,
+        username:""
+      }
+      default:
+        return state
+  }
+}
+
+const UserProvider = ({children}) => {
+  const [state, dispatch] = useReducer(reducer, initialState);
+  return (
+    <UserContext.Provider value={{ state, dispatch }}>
+      {children}
+    </UserContext.Provider>
+  )
+}
+
+export default UserProvider
